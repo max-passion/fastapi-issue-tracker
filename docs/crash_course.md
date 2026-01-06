@@ -886,6 +886,40 @@ app.add_middleware(
 
 This will allow all origins to access your API. In production, you should restrict `allow_origins` to only the domains you trust.
 
+## Deployment
+
+For deploying your FastAPI app, you can use various platforms like Render, Railway, Heroku, AWS, etc. A common approach is to use **Docker** to containerize your application.
+
+I want to keep it simple and use Render, which is a PaaS (Platform as a Service) that makes it easy to deploy web apps. We basically just need to link our GitHub repo and set the build and start commands.
+
+### Generate Requirements File
+
+To generate a `requirements.txt` file that lists all your dependencies, run the following command in your terminal:
+
+```bash
+pip freeze > requirements.txt
+```
+
+This will create a `requirements.txt` file in your current directory with all the packages installed in your virtual environment. We need this file for Render to know which packages to install.
+
+### Render Deployment Steps
+
+1. Push your code to a GitHub repository.
+2. Go to [Render](https://render.com/) and create a new account if you don't have one.
+3. Click on "New" and select "Web Service".
+4. Connect your GitHub repository.
+5. Set the build command to:
+   ```bash
+   pip install -r requirements.txt
+   ```
+6. Set the start command to:
+   ```bash
+    uvicorn main:app --host
+   ```
+7. Click "Create Web Service" and wait for the deployment to finish.
+
+Your FastAPI app should now be live on Render!
+
 ## Authentication
 
 There are a lot of ways to do authentication in FastAPI. I want to show you a common solution using JWT tokens and secure password hashing.
