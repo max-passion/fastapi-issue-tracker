@@ -822,6 +822,30 @@ def delete_issue(issue_id: str):
 
 ```
 
+## CORS
+
+You may want to enable CORS (Cross-Origin Resource Sharing) if you plan to call your API from a frontend app running on a different domain or port.
+
+Add the following import to `main.py`:
+
+```python
+from fastapi.middleware.cors import CORSMiddleware
+```
+
+Then add this code after creating the `app` instance:
+
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your frontend's origin in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+This will allow all origins to access your API. In production, you should restrict `allow_origins` to only the domains you trust.
+
 ## Authentication
 
 There are a lot of ways to do authentication in FastAPI. I want to show you a common solution using JWT tokens and secure password hashing.
