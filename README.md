@@ -11,6 +11,7 @@ A mini production-style REST API built with FastAPI for tracking issues. This pr
 - Status tracking (open, in_progress, closed)
 - JSON file-based storage
 - Auto-generated API documentation
+- Custom middleware (timing, CORS)
 
 ## Requirements
 
@@ -102,6 +103,37 @@ curl -X PUT http://localhost:8000/api/v1/issues/{id} \
   }'
 ```
 
+## Middleware
+
+This project includes custom middleware to demonstrate the middleware pattern in FastAPI.
+
+### Timing Middleware
+
+Adds an `X-Process-Time` header to all responses showing how long the request took to process:
+
+```python
+# app/middleware/timing.py
+async def timing_middleware(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    response.headers["X-Process-Time"] = f"{time.perf_counter() - start:.4f}s"
+    return response
+```
+
+### CORS Middleware
+
+Enables cross-origin requests from frontend applications:
+
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
 ## Project Structure
 
 ```
@@ -110,6 +142,8 @@ fastapi-issue-tracker/
 ├── app/
 │   ├── schemas.py       # Pydantic models for validation
 │   ├── storage.py       # JSON file storage functions
+│   ├── middleware/
+│   │   └── timing.py    # Response timing middleware
 │   └── routes/
 │       └── issues.py    # Issue CRUD endpoints
 ├── data/

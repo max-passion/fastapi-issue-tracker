@@ -822,6 +822,46 @@ def delete_issue(issue_id: str):
 
 ```
 
+## Middleware
+
+Just about every backend web framework has the concept of middleware. Middleware is code that runs before and/or after each request. It can modify the request or response, perform logging, handle authentication, etc.
+
+### Timing Header Middleware
+
+Let's add some custom middleware that will add a custom header to each response showing how long the request took to process.
+
+Create a new folder `app/middleware/` and create a file `timing.py` with the following code:
+
+```python
+import time
+from fastapi import Request
+
+async def timing_middleware(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    response.headers["X-Process-Time"] = f"{time.perf_counter() - start:.4f}s"
+    return response
+
+```
+
+### What This Does
+
+- `request: Request` - The incoming request object.
+- `call_next` - A function that, when called, will pass the request to the next middleware or route handler.
+- `time.perf_counter()` - High-resolution timer to measure elapsed time.
+- We calculate the time taken to process the request and add it as a custom header `X-Process-Time` to the response.
+
+Everything before `await call_next(request)` runs before the request is processed, and everything after runs after the response is generated. That is why we add the header after calling `call_next`. So the request is made, the response is generated, and then we add our custom header before sending it back to the client.
+
+### Add Middleware to Main App
+
+```python
+from app.middleware.timing import timing_middleware
+
+# After app is created
+app.middleware("http")(timing_middleware)
+```
+
 ## CORS
 
 You may want to enable CORS (Cross-Origin Resource Sharing) if you plan to call your API from a frontend app running on a different domain or port.
