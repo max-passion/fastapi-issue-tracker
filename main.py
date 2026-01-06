@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.routes.issues import router as issues_router
 
 app = FastAPI(
     title="Issue Tracker API",
@@ -7,6 +8,9 @@ app = FastAPI(
 )
 
 
-@app.get("/health")
+@app.get("/api/v1health")
 def health_check():
     return {"status": "ok"}
+
+
+app.include_router(issues_router)
