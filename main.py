@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 
-@app.get("/api/v1health")
+@app.get("/api/v1/health")
 def health_check():
     return {"status": "ok"}
 

@@ -913,9 +913,11 @@ This will create a `requirements.txt` file in your current directory with all th
    pip install -r requirements.txt
    ```
 6. Set the start command to:
+
    ```bash
-    uvicorn main:app --host
+    uvicorn main:app --host 0.0.0.0 --port $PORT
    ```
+
 7. Click "Create Web Service" and wait for the deployment to finish.
 
 Your FastAPI app should now be live on Render!
